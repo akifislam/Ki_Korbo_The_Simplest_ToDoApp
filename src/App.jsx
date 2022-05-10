@@ -1,7 +1,9 @@
 import { useState } from "react";
 import "./App.css";
+import InputTask from "./components/InputTask";
 
 function App() {
+  //States
   const [todolists, settodolist] = useState([
     "Morning Walk at 6am",
     "Exercise at 8am",
@@ -9,6 +11,20 @@ function App() {
   ]);
   const [currentInput, setCurrentInput] = useState("");
 
+  //Handler
+  const handleInput = (e) => {
+    console.log("Handle Input Called");
+    setCurrentInput(e.target.value);
+  };
+  const handleAdd = () => {
+    console.log("Handle Add Called");
+    if (currentInput.length > 0) {
+      settodolist([...todolists, currentInput]);
+    }
+    setCurrentInput("");
+  };
+
+  //Rendering UI
   return (
     <div className="App">
       <h1>
@@ -25,28 +41,7 @@ function App() {
         ))}
       </ul>
 
-      <div class="input-group mb-3">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Enter a task to do"
-          aria-label="Recipient's username"
-          aria-describedby="button-addon2"
-          onChange={(e) => setCurrentInput(e.target.value)}
-        ></input>
-        <button
-          class="btn btn-outline-secondary"
-          type="button"
-          id="button-addon2"
-          onClick={(e) => {
-            e.preventDefault();
-            settodolist([...todolists, currentInput]);
-            setCurrentInput("");
-          }}
-        >
-          Add
-        </button>
-      </div>
+      <InputTask onInput={handleInput} onAdd={handleAdd} />
     </div>
   );
 }
