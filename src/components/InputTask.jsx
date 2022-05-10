@@ -5,14 +5,14 @@ function InputTask(props) {
     <div class="input-group mb-3">
       <input
         type="text"
-        class="form-control"
+        className="form-control"
         placeholder="Enter a task to do"
         aria-label="Recipient's username"
         aria-describedby="button-addon2"
         onChange={(e) => props.onInput(e)}
       ></input>
       <button
-        class="btn btn-outline-secondary"
+        className="btn btn-outline-secondary"
         type="button"
         id="button-addon2"
         onClick={(e) => {
