@@ -1,16 +1,31 @@
 import { useState } from "react";
+import { useEffect } from "react";
 import "./App.css";
 import InputTask from "./components/InputTask";
 
 function App() {
   //States
-  const [todolists, settodolist] = useState([
-    { id: 1, task: "Ruhul Bhai er sathe Bhaat Khabo" },
-    { id: 2, task: "Bondhu der sathe Adda Dibo" },
-    { id: 3, task: "Taposhi Rabeyar Shamne Ful niye Wait korbo" },
-  ]);
+  const [todolists, settodolist] = useState([]);
+
   const [currentInput, setCurrentInput] = useState("");
   const [check, setcheck] = useState(false);
+  //API Data Fetching from MongoDB
+  const fetchItems = () => {};
+
+  const updateTaskBoard = () => {
+    fetch("/todolist").then((res) => {
+      console.log(res);
+      res.json().then((data) => {
+        console.log(data);
+        settodolist(data);
+      });
+    });
+  };
+
+  // Initaial Call
+  useEffect(() => {
+    updateTaskBoard();
+  }, []);
 
   //Input Field Handler
   const handleInput = (e) => {
@@ -20,24 +35,29 @@ function App() {
 
   //Task Add Handler
   const handleAdd = () => {
-    console.log("Handle Add Called");
-    const newID = todolists.length + 1;
-    if (currentInput.length > 0) {
-      settodolist([...todolists, { id: { newID }, task: currentInput }]);
-    } else {
-      alert("Please enter a task");
-    }
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ task: currentInput }),
+    };
+
+    fetch("/todolist", requestOptions).then(() => {
+      updateTaskBoard();
+    });
+    console.log("Added : ", requestOptions.body);
     setCurrentInput("");
   };
 
-  //Complete Task Handler
+  //Delete / Complete Task Handler
   const handleDelete = (id) => {
-    const newlist = todolists.filter((item) => item.id != id);
-    // const index = newlist.indexOf(id);
-    settodolist(newlist);
-    console.log(newlist);
-    setcheck(true);
-    setcheck(false);
+    console.log("Deleting ID : ", id);
+    const requestOptions = {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    };
+    fetch("/todolist/" + id, requestOptions).then(() => {
+      updateTaskBoard();
+    });
   };
 
   //Rendering UI
@@ -62,7 +82,7 @@ function App() {
               checked={check}
               onChange={() => {
                 console.log("Checkbox Clicked of id : ", todo);
-                handleDelete(todo.id);
+                handleDelete(todo._id);
               }}
             ></input>
             {todo.task}
