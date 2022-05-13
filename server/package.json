@@ -1,18 +1,20 @@
 {
-  "name": "server",
+  "name": "authentication_with_mosh",
   "version": "1.0.0",
-  "description": "A Restful API for To-do App",
+  "description": "",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js"
   },
-  "author": "Akif Islam",
+  "keywords": [],
+  "author": "",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.20.0",
-    "dot-env": "^0.0.1",
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
     "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.3",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.16"
