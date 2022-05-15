@@ -1,6 +1,8 @@
 // Necessary Datas (PORTS, SECRET for JWT)
 PORT = 8080 || process.env.PORT;
-secret = "doradorafedoradoraakifdoradora";
+const dotenv = require("dotenv");
+dotenv.config();
+secret = process.env.SECRET;
 
 // Imports
 const router = require("express").Router();
@@ -8,7 +10,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const postRoute = require("../routes/posts");
+
 
 // Models
 const Users = require("../models/userSchema");

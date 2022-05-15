@@ -3,6 +3,7 @@ import React from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import Logout from "./Logout";
 
 var userName = "";
 var userID = "";
@@ -13,15 +14,23 @@ function Posts() {
   const [check, setcheck] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    userName = localStorage.getItem("name");
+    userID = localStorage.getItem("id");
+    console.log("Logged in As  : " + userName);
+    if (window.location.pathname === "/posts") getTodoList(userID);
+  }, []);
+
   const handleDelete = (taskID) => {
     const newID = todolist.length + 1;
     const newTodo = todolist.filter((task) => task.id !== taskID);
     setTodolist(newTodo);
     setCurrentInput("");
 
-    fetch("http://localhost:8080/api/todolist/" + userID + "/" + taskID, {
+    fetch("/api/todolist/" + userID + "/" + taskID, {
       method: "DELETE",
       headers: {
+        "x-auth-token": localStorage.getItem("token"),
         "Content-Type": "application/json",
         Accept: "application/json",
       },
@@ -37,9 +46,10 @@ function Posts() {
     setTodolist(newTodo);
     setCurrentInput("");
 
-    fetch("http://localhost:8080/api/todolist/" + userID, {
+    fetch("/api/todolist/" + userID, {
       method: "PUT",
       headers: {
+        "x-auth-token": localStorage.getItem("token"),
         "Content-Type": "application/json",
         Accept: "application/json",
       },
@@ -51,49 +61,27 @@ function Posts() {
 
   const getTodoList = (id) => {
     console.log(id);
-    const todolistURL = "http://localhost:8080/api/todolist/" + String(id);
+    const todolistURL = "/api/todolist/" + String(id);
     console.log("Todolist URL : " + todolistURL);
     fetch(todolistURL, {
       method: "GET",
       headers: {
+        "x-auth-token": localStorage.getItem("token"),
         "Content-Type": "application/json",
         Accept: "application/json",
       },
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        console.log(data.todolist);
         setTodolist(data.todolist);
+        navigate("/posts");
       })
       .catch((err) => {
         console.log("Error" + err);
       }); // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
-  useEffect(() => {
-    fetch("http://localhost:8080/posts", {
-      method: "GET",
-      headers: {
-        "x-auth-token": localStorage.getItem("token"),
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        if (data.isTokenOK) {
-          userName = data.name;
-          userID = data.id;
-          console.log("Logged in As  : " + userName);
-          getTodoList(data.id);
-          navigate("/posts");
-        } else {
-          navigate("/login");
-        }
-      })
-      .catch((err) => {
-        console.log("Error" + err);
-      }); // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   return (
     <div className="App">
       <h1>
@@ -103,7 +91,9 @@ function Posts() {
         </small>
       </h1>
       <br></br>
-      <h6> Welcome {userName}</h6>
+      <h6>
+        Welcome {userName} <Logout />
+      </h6>
       <ul className="list-group">
         {todolist.map((todo) => (
           <li class="list-group-item">
@@ -130,6 +120,7 @@ function Posts() {
           aria-label="Recipient's username"
           aria-describedby="button-addon2"
           onChange={(e) => setCurrentInput(e.target.value)}
+          value={currentInput}
         ></input>
         <button
           className="btn btn-outline-secondary"

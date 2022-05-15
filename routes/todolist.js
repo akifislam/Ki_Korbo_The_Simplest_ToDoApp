@@ -2,20 +2,21 @@
 
 // Necessary Datas (PORTS, SECRET for JWT)
 PORT = 8080 || process.env.PORT;
-secret = "doradorafedoradoraakifdoradora";
-
+secret = secret = process.env.SECRET;
+const dotenv = require("dotenv");
+dotenv.config();
 // Imports
 const router = require("express").Router();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const postRoute = require("../routes/posts");
+const verifyToken = require("./verifyToken");
 
 // Models
 const Users = require("../models/userSchema");
 
-router.get("/:userID", (req, res) => {
+router.get("/:userID", verifyToken, (req, res) => {
   Users.find({ _id: req.params.userID })
     .then((user) => {
       res.json({ name: user[0].name, todolist: user[0].todolist });
@@ -24,20 +25,20 @@ router.get("/:userID", (req, res) => {
 });
 
 // It will update the todolist with new todos
-router.put("/:userID", (req, res) => {
+router.put("/:userID", verifyToken, (req, res) => {
   Users.findOneAndUpdate(
     { _id: req.params.userID },
     { todolist: req.body.todolist }
   )
     .then((user) => {
       console.log("Updated :" + user.todolist);
-      res.send(user);
+      res.json(user);
     })
     .catch((err) => console.log(err));
 });
 
 // It will delete the todolist
-router.delete("/:userID/:taskid", (req, res) => {
+router.delete("/:userID/:taskid", verifyToken, (req, res) => {
   Users.find({ _id: req.params.userID }).then((user) => {
     const previousTodolist = user[0].todolist;
 
@@ -47,7 +48,7 @@ router.delete("/:userID/:taskid", (req, res) => {
     Users.findOneAndUpdate(
       { _id: req.params.userID },
       { todolist: newTodolist }
-    ).then((user) => res.send(user.todolist));
+    ).then((user) => res.json(user.todolist));
   });
 });
 
