@@ -41,5 +41,5 @@ Clone down this repository. You will need `node.js` and `git` installed globally
 
 
 ## Inspiratoin
-OmarFaruqeSir[omarfaruqe] from Software Development Lab I & II
+[Omar Faruqe Sir ](https://github.com/omarfaruqe) from Software Development Lab I & II
 
