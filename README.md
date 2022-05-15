@@ -40,6 +40,6 @@ Clone down this repository. You will need `node.js` and `git` installed globally
 2. Now in root and client directory, just run: `npm start`
 
 
-## Inspiratoin
+## Inspiration
 [Omar Faruqe Sir ](https://github.com/omarfaruqe) from Software Development Lab I & II
 
